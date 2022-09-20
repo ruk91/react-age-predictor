@@ -1,35 +1,25 @@
 import './App.css';
 import React, { useState } from 'react';
+import Axios from 'axios'
 
 function App() {
-  const [name, setName] = useState('')
-  const [predictedData, setPredictedData] = useState(null)
+  const [generatedExcuse, setGeneratedExcuse] = useState("")
 
-  const predictAge = () => {
-    fetch(`https://api.agify.io/?name=${name}`)
-    .then((res) => res.json())
-    .then((data) => {
-      console.log('data: ', data)
-      setPredictedData(data)
+  const fetchExcuse = (excuse) => {
+    Axios.get(`https://excuser.herokuapp.com/v1/excuse/${excuse}`)
+    .then((res) => {
+      setGeneratedExcuse(res.data[0].excuse)
     })
   }
 
   return (
     <div className="App">
-      <input
-        placeholder='Enter your name here..'
-        onChange={(event) => setName(event.target.value)}
-      />
+      <h1>Generate an Excuse</h1>
+      <button onClick={() => fetchExcuse('party')} > Party</button>
+      <button onClick={() => fetchExcuse('family')} > Family</button>
+      <button onClick={() => fetchExcuse('office')} > Office</button>
 
-      <button
-        onClick={predictAge}
-      >
-        Predict Age
-      </button>
-
-      <h2>Name: {predictedData?.name}</h2>
-      <h2>Age: {predictedData?.age}</h2>
-      <h2>Count: {predictedData?.count}</h2>
+      <h4>{generatedExcuse}</h4>
     </div>
   );
 }
